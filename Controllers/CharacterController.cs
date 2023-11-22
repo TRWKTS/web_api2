@@ -10,9 +10,13 @@ namespace web_api2.Controllers
     [Route("api/[controller]")]
     public class CharacterController : ControllerBase
     {
-        private static Character assassin = new Character();
+        private static List<Character> assassin = new List<Character>{
+            new Character(),
+            new Character{ Name = "Hola"}
+        };
 
-        public IActionResult Get() {
+        [HttpGet]
+        public ActionResult<List<Character>> Get() {
             return Ok(assassin);
         }
     }
