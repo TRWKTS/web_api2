@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using web_api2.Models;
 
 namespace web_api2.Controllers
 {
@@ -11,11 +10,21 @@ namespace web_api2.Controllers
     [Route("api/[controller]")]
     public class CharacterController : ControllerBase
     {
-        private static Character assassin = new Character();
+        private static List<Character> characters = new List<Character>{
+            new Character(),
+            new Character {Name = "Game"}
+        };
+
+        [HttpGet("api/GetAll")]
+        public ActionResult <List<Character>> Get() 
+        {
+            return Ok(characters);
+        }
 
         [HttpGet]
-        public IActionResult Get() {
-            return Ok(assassin);
+        public ActionResult<Character> GetSingle()
+        {
+            return Ok(characters[0]);
         }
     }
 }
