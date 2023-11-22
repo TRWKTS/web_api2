@@ -1,4 +1,4 @@
-
+global using web_api2.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
