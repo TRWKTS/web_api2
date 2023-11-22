@@ -10,21 +10,29 @@ namespace web_api2.Controllers
     [Route("api/[controller]")]
     public class CharacterController : ControllerBase
     {
-        private static List<Character> characters = new List<Character>{
-            new Character(),
-            new Character {Name = "Game"}
-        };
+        private readonly ICharacterService _characterService;
 
-        [HttpGet("api/GetAll")]
-        public ActionResult <List<Character>> Get() 
+        public CharacterController(ICharacterService characterService)
         {
-            return Ok(characters);
+            _characterService = characterService;
         }
 
-        [HttpGet]
-        public ActionResult<Character> GetSingle()
+        [HttpGet("GetAll")]
+        public async Task<ActionResult<ServiceResponse<List<Character>>>> Get() 
         {
-            return Ok(characters[0]);
+            return Ok(await _characterService.GetAllCharacter());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ServiceResponse<Character>>> GetSingle(int id)
+        {
+            return Ok(await _characterService.GetCharacterById(id));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ServiceResponse<List<Character>>>> AddCharacter(Character newCharacter)
+        {
+            return Ok(await _characterService.AddCharacter(newCharacter));
         }
     }
 }
