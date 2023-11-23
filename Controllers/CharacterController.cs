@@ -35,9 +35,5 @@ namespace web_api2.Controllers
             return Ok(await _characterService.AddCharacter(newCharacter));
         }
         
-        [HttpGet]
-        public ActionResult<List<Character>> GetSingle() {
-            return Ok(assassin[0]);
-        }
     }
 }
