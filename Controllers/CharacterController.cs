@@ -16,9 +16,14 @@ namespace web_api2.Controllers
             new Character{ Name = "Hola"}
         };
 
-        [HttpGet]
+        [HttpGet("GetAll")] 
         public ActionResult<List<Character>> Get() {
             return Ok(assassin);
+        }
+        
+        [HttpGet]
+        public ActionResult<List<Character>> GetSingle() {
+            return Ok(assassin[0]);
         }
     }
 }
