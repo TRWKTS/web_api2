@@ -3,6 +3,7 @@ global using web_api2.Services.CharacterService;
 global using web_api2.DOTs.Character;
 global using Microsoft.EntityFrameworkCore;
 using web_api2.Data;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -2,7 +2,11 @@ global using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Azure;
+using StackExchange.Redis;
 using web_api2.Data;
 
 
@@ -15,11 +19,14 @@ namespace web_api2.Services.CharacterService
         };
         private readonly DataContext _context;
         private readonly IMapper _mapper;
+        private IDatabase _cacheDb;
 
         public  CharacterService(IMapper mapper, DataContext context)
         {
+            var redis = ConnectionMultiplexer.Connect("localhost:6379");
             _context = context;
             _mapper = mapper;
+            _cacheDb = redis.GetDatabase();
         }
 
         public object Characte { get; private set; }
@@ -29,7 +36,7 @@ namespace web_api2.Services.CharacterService
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
             try {
                 var character = _mapper.Map<Character>(newCharacter);
-                // character.Id = characters.Max(c => c.Id) + 1 ; 
+                
                 
                 _context.Characters.Add(character);
                 await _context.SaveChangesAsync();
@@ -42,6 +49,7 @@ namespace web_api2.Services.CharacterService
             }
             return serviceResponse;
         }
+
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> DeleteCharacter(int id)
         {
@@ -73,16 +81,53 @@ namespace web_api2.Services.CharacterService
         public async Task<ServiceResponse<List<GetCharacterDto>>> GetAllCharacters()
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
-            var dbCharacters = await _context.Characters.ToListAsync();
-            serviceResponse.Data = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+            var redisDb = _cacheDb;
+            var cachedCharacters = await redisDb.StringGetAsync("all_characters");
+
+            if(!cachedCharacters.IsNullOrEmpty)
+            {
+                var characterDtos = JsonSerializer.Deserialize<List<GetCharacterDto>>(cachedCharacters);
+                serviceResponse.Data = characterDtos;
+            }
+            else
+            {
+                var dbCharacters = await _context.Characters.ToListAsync();
+                var characterDtos = dbCharacters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
+
+                var serializedCharacters = JsonSerializer.Serialize(characterDtos);
+                await redisDb.StringSetAsync("all_characters", serializedCharacters);
+                serviceResponse.Data = characterDtos;
+            }
+            
             return serviceResponse;
         }
 
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
-            var character =await _context.Characters.FirstOrDefaultAsync(c => c.Id == id);
-            serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
+            var redisDb = _cacheDb;
+
+            var cachedCharacter = await redisDb.StringGetAsync($"character_{id}");
+
+            if (!cachedCharacter.IsNullOrEmpty)
+            {
+                var characterDto = JsonSerializer.Deserialize<GetCharacterDto>(cachedCharacter);
+                serviceResponse.Data = characterDto;
+            }
+            else
+            {
+                var character =await _context.Characters.FirstOrDefaultAsync(c => c.Id == id);
+                if (character == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = $"Character with ID {id} Not Found.";
+                    return serviceResponse;
+                }
+                var characterDto = _mapper.Map<GetCharacterDto>(character);
+                await redisDb.StringSetAsync($"character_{id}", JsonSerializer.Serialize(characterDto));
+
+                serviceResponse.Data = characterDto;
+            }    
             return serviceResponse;
         }
 
