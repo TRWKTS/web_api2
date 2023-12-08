@@ -21,12 +21,11 @@ namespace web_api2.Services.CharacterService
         private readonly IMapper _mapper;
         private IDatabase _cacheDb;
 
-        public  CharacterService(IMapper mapper, DataContext context)
+        public  CharacterService(IMapper mapper, DataContext context, IConnectionMultiplexer cacheDb)
         {
-            var redis = ConnectionMultiplexer.Connect("localhost:6379");
             _context = context;
             _mapper = mapper;
-            _cacheDb = redis.GetDatabase();
+            _cacheDb = cacheDb.GetDatabase();
         }
 
         private async Task ClearCache(string cacheKey)
