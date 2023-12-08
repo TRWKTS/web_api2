@@ -45,7 +45,7 @@ namespace web_api2.Controllers
             return Ok(response);
         }
 
-          [HttpDelete("{id}")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> DeleteCharacter(int id)
         {
             var response = await _characterService.DeleteCharacter(id);
