@@ -10,11 +10,11 @@ namespace web_api2.DOTs.Character
         internal int strength;
         
         public int Id { get; set; }
-        public string? Name { get; set; } = "Tle";
-        public int Hitpoints { get; set; } = 100;
-        public int Strength { get; set; } = 10;
-        public int Defense { get; set; } = 10;
-        public float Intelligence { get; set; } = 10;
-        public RpgClass Class { get; set; } = RpgClass.Assassin;
+        public string? Name { get; set; }
+        public int Hitpoints { get; set; }
+        public int Strength { get; set; }
+        public int Defense { get; set; }
+        public float Intelligence { get; set; }
+        public RpgClass Class { get; set; }
     }
 }
