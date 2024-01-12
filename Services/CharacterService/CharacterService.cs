@@ -28,11 +28,6 @@ namespace web_api2.Services.CharacterService
             _cacheDb = cacheDb.GetDatabase();
         }
 
-        private async Task ClearCache(string cacheKey)
-        {
-            await _cacheDb.KeyDeleteAsync(cacheKey);
-        }
-
         public object Characte { get; private set; }
 
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
@@ -44,7 +39,7 @@ namespace web_api2.Services.CharacterService
                 _context.Characters.Add(character);
                 await _context.SaveChangesAsync();
 
-                await ClearCache("all_characters");
+                await _cacheDb.KeyDeleteAsync("all_characters");
                 serviceResponse.Data = characters.Select(c =>_mapper.Map<GetCharacterDto>(c)).ToList();
             }
             catch (Exception ex)
@@ -69,7 +64,7 @@ namespace web_api2.Services.CharacterService
 
                 _context.Characters.Remove(character);
                 await _context.SaveChangesAsync();
-                await ClearCache("all_characters");
+                await _cacheDb.KeyDeleteAsync("all_characters");
                 serviceResponse.Data = characters.Select(c => _mapper.Map<GetCharacterDto>(c)).ToList();
             } 
             catch (Exception ex) {
@@ -157,7 +152,7 @@ namespace web_api2.Services.CharacterService
                 character.Class = updatedCharacter.Class;
 
                 await _context.SaveChangesAsync();
-                await ClearCache("all_characters");
+                await _cacheDb.KeyDeleteAsync("all_characters");
                 serviceResponse.Data = _mapper.Map<GetCharacterDto>(character);
             } 
             catch (Exception ex) {
