@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace web_api2.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CharacterController : ControllerBase
@@ -18,7 +20,7 @@ namespace web_api2.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Get() 
+        public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Get()
         {
             return Ok(await _characterService.GetAllCharacters());
         }
@@ -39,8 +41,9 @@ namespace web_api2.Controllers
         public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> UpdateCharacter(UpdateCharacterDto updatedCharacter)
         {
             var response = await _characterService.UpdateCharacter(updatedCharacter);
-            if (response.Data is null){
-                return NotFound(response); 
+            if (response.Data is null)
+            {
+                return NotFound(response);
             }
             return Ok(response);
         }
@@ -51,10 +54,16 @@ namespace web_api2.Controllers
             var response = await _characterService.DeleteCharacter(id);
             if (response.Data is null)
             {
-                return NotFound(response); 
+                return NotFound(response);
             }
             return Ok(response);
         }
-        
+
+        [HttpPost("Skill")]
+        public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> AddCharacterSkill(
+            AddCharacterSkillDto newCharacterSkill)
+        {
+            return Ok(await _characterService.AddCharacterSkill(newCharacterSkill));
+        }
     }
 }

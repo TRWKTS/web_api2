@@ -14,7 +14,7 @@ namespace web_api2.DOTs.Character
         public int Hitpoints { get; set; }
         public int Strength { get; set; }
         public int Defense { get; set; }
-        public float Intelligence { get; set; }
+        public int Intelligence { get; set; }
         public RpgClass Class { get; set; }
     }
 }

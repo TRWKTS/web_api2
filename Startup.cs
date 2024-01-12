@@ -2,13 +2,15 @@ global using web_api2.Models;
 global using web_api2.Services.CharacterService;
 global using web_api2.DOTs.Character;
 global using Microsoft.EntityFrameworkCore;
+global using web_api2.Data;
+global using web_api2.Services.FightService;
+global using web_api2.Services.WeaponService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StackExchange.Redis;
-using web_api2.Data;
 
 namespace web_api2
 {
