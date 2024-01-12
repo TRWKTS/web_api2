@@ -28,8 +28,6 @@ namespace web_api2.Services.CharacterService
             _cacheDb = cacheDb.GetDatabase();
         }
 
-        public object Characte { get; private set; }
-
         public async Task<ServiceResponse<List<GetCharacterDto>>> AddCharacter(AddCharacterDto newCharacter)
         {
             var serviceResponse = new ServiceResponse<List<GetCharacterDto>>();
