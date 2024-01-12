@@ -27,9 +27,6 @@ namespace web_api2
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddSingleton<IConnectionMultiplexer>(options =>
-                ConnectionMultiplexer.Connect(Configuration.GetConnectionString("RedisConnection")));
-
             services.AddControllers();
 
             services.AddEndpointsApiExplorer();
