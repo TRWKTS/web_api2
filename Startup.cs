@@ -5,7 +5,6 @@ global using Microsoft.EntityFrameworkCore;
 global using web_api2.Data;
 global using web_api2.Services.FightService;
 global using web_api2.Services.WeaponService;
-using StackExchange.Redis;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
