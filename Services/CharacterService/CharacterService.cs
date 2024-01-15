@@ -34,7 +34,7 @@ namespace web_api2.Services.CharacterService
 
             serviceResponse.Data =
                 await _context.Characters
-                    .Where(c => c.User!.Id == GetUserId())
+                    .Where(c => c.User != null && c.User.Id == GetUserId())
                     .Select(c => _mapper.Map<GetCharacterDto>(c))
                     .ToListAsync();
             return serviceResponse;
